@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Stats Card</title>
+  <meta name="description" content="Generate beautiful, shareable GitHub repository stats cards." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <h1>GitHub Stats Card</h1>
+      <p>Enter a repository to generate a beautiful embeddable card.</p>
+    </header>
+
+    <main class="search-section">
+      <form id="search-form" class="search-form">
+        <input 
+          type="text" 
+          id="repo-input" 
+          class="search-input" 
+          placeholder="e.g. torvalds/linux" 
+          required 
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <select id="theme-select" class="theme-select">
+          <option value="">Auto</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+        <button type="submit" class="btn">Generate</button>
+      </form>
+      <div id="error-message" class="error-message"></div>
+      
+      <div class="embed-container">
+        <label for="embed-code">Markdown Embed Code:</label>
+        <div class="embed-input-group">
+          <input type="text" id="embed-code" readonly />
+          <button id="copy-btn" class="btn">Copy</button>
+        </div>
+      </div>
+    </main>
+
+    <div id="card-preview" class="github-stats-card" style="opacity: 0">
+      <div class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Fetching repository data...</p>
+      </div>
+
+      <div class="card-header">
+        <div class="repo-title"></div>
+        <p class="repo-description"></p>
+        <div class="topics-container"></div>
+      </div>
+
+      <div class="card-grid">
+        <div class="chart-section pie-layout">
+          <div class="canvas-container">
+            <canvas id="lang-pie-chart"></canvas>
+          </div>
+          <div class="language-pills"></div>
+        </div>
+
+        <div class="chart-section stats-layout">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span id="stat-stars" class="stat-val">0</span>
+              <span class="stat-lbl">Stars</span>
+            </div>
+            <div class="stat-item">
+              <span id="stat-forks" class="stat-val">0</span>
+              <span class="stat-lbl">Forks</span>
+            </div>
+            <div class="stat-item">
+              <span id="stat-watchers" class="stat-val">0</span>
+              <span class="stat-lbl">Watchers</span>
+            </div>
+            <div class="stat-item">
+              <span id="stat-issues" class="stat-val">0</span>
+              <span class="stat-lbl">Issues</span>
+            </div>
+          </div>
+          <div class="stars-graph-container">
+            <canvas id="stars-graph-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="contributors-container">
+        <span class="contributors-header">Top Contributors</span>
+        <div class="contributors-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/logos.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/card.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Stats Card</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    body {
+      background: transparent;
+      min-height: auto;
+      padding: 20px;
+      display: block;
+    }
+    .github-stats-card {
+      margin: 0;
+      max-width: 100%;
+    }
+  </style>
+  <script>
+    (function() {
+      const p = new URLSearchParams(window.location.search);
+      const t = p.get('theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+    })();
+  </script>
+</head>
+<body>
+
+  <div id="card-render-target" class="github-stats-card">
+    <div class="loading-overlay">
+      <div class="spinner"></div>
+      <p>Loading card...</p>
+    </div>
+
+    <div class="card-header">
+      <div class="repo-title"></div>
+      <p class="repo-description"></p>
+      <div class="topics-container"></div>
+    </div>
+
+    <div class="card-grid">
+      <div class="chart-section pie-layout">
+        <div class="canvas-container">
+          <canvas id="lang-pie-chart"></canvas>
+        </div>
+        <div class="language-pills"></div>
+      </div>
+
+      <div class="chart-section stats-layout">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <span id="stat-stars" class="stat-val">-</span>
+            <span class="stat-lbl">Stars</span>
+          </div>
+          <div class="stat-item">
+            <span id="stat-forks" class="stat-val">-</span>
+            <span class="stat-lbl">Forks</span>
+          </div>
+          <div class="stat-item">
+            <span id="stat-watchers" class="stat-val">-</span>
+            <span class="stat-lbl">Watchers</span>
+          </div>
+          <div class="stat-item">
+            <span id="stat-issues" class="stat-val">-</span>
+            <span class="stat-lbl">Issues</span>
+          </div>
+        </div>
+        <div class="stars-graph-container">
+          <canvas id="stars-graph-chart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="contributors-container">
+      <span class="contributors-header">Top Contributors</span>
+      <div class="contributors-list"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/logos.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/card.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const repoParam = urlParams.get('repo');
+      const target = document.getElementById('card-render-target');
+      
+      if (!repoParam) {
+        target.textContent = '';
+        const p = document.createElement('p');
+        p.style.color = 'red';
+        p.textContent = 'Error: No repo parameter provided. Usage: ?repo=owner/name';
+        target.appendChild(p);
+        return;
+      }
+      
+      const parts = repoParam.split('/');
+      if (parts.length !== 2) return;
+      
+      showLoadingState(target);
+      try {
+        const data = await getAllRepoData(parts[0], parts[1]);
+        renderCard(target, data);
+        hideLoadingState(target);
+      } catch (e) {
+        hideLoadingState(target);
+        const err = document.createElement('div');
+        err.style.color = 'red';
+        err.textContent = 'Failed to load data for ' + repoParam;
+        target.appendChild(err);
+      }
+    });
+  </script>
+</body>
+</html>
